@@ -129,7 +129,6 @@ How to Run the Project
 Launch the Jupyter notebook environment:
 
 bash
-Copy code
 jupyter notebook
 Open the following notebooks:
 
