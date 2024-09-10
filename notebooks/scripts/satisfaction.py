@@ -1,21 +1,32 @@
 import numpy as np
 from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_squared_error
 
 def calculate_engagement_scores(df):
-    # Example to calculate engagement scores based on clustering
-    return np.linalg.norm(df[['session_frequency', 'session_duration']] - least_engaged_cluster, axis=1)
+    """
+    Calculate the engagement score for each user based on session frequency,
+    duration, and total data (DL + UL).
+    """
+    df['Total Traffic (Bytes)'] = df['Total DL (Bytes)'] + df['Total UL (Bytes)']
+    engagement_score = df[['Dur. (ms)', 'Total Traffic (Bytes)']].sum(axis=1)
+    return engagement_score
 
 def calculate_experience_scores(df):
-    # Example to calculate experience scores based on clustering
-    return np.linalg.norm(df[['tcp_retransmission', 'rtt']] - worst_experience_cluster, axis=1)
+    """
+    Calculate the experience score for each user based on RTT, TCP retransmission,
+    and throughput.
+    """
+    # Calculate throughput (Download + Upload) / Duration
+    df['Throughput'] = (df['Total DL (Bytes)'] + df['Total UL (Bytes)']) / df['Dur. (ms)']
+    # Calculate experience score as a combination of network parameters
+    experience_score = df[['Avg RTT DL (ms)', 'Avg RTT UL (ms)', 'TCP DL Retrans. Vol (Bytes)', 'Throughput']].sum(axis=1)
+    return experience_score
 
-def build_regression_model(df, target):
-    # Build a simple linear regression model
+def build_regression_model(df, target='satisfaction_score'):
+    """
+    Build a regression model to predict satisfaction scores.
+    """
     X = df[['engagement_score', 'experience_score']]
     y = df[target]
     model = LinearRegression()
     model.fit(X, y)
-    y_pred = model.predict(X)
-    mse = mean_squared_error(y, y_pred)
-    return model, mse
+    return model
