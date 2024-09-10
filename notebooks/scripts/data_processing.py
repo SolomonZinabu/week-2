@@ -29,3 +29,35 @@ def get_top_handsets_per_manufacturer(df, manufacturers):
     for manufacturer in manufacturers:
         result[manufacturer] = df[df['Handset Manufacturer'] == manufacturer]['Handset Type'].value_counts().head(5)
     return result
+
+
+def aggregate_experience_metrics(df):
+    # Aggregate experience metrics per customer
+    return df.groupby('MSISDN/Number').agg({
+        'TCP DL Retrans. Vol (Bytes)': 'mean',
+        'Avg RTT DL (ms)': 'mean',
+        'Avg Bearer TP DL (kbps)': 'mean',
+        'Handset Type': 'first'
+    })
+
+def get_top_bottom_frequent(df, column, top_n=10):
+    """
+    Get the top, bottom, and most frequent values for a specified column.
+
+    Parameters:
+    - df (pd.DataFrame): Data frame containing the data.
+    - column (str): The column for which top, bottom, and frequent values are computed.
+    - top_n (int): The number of top and bottom values to return.
+
+    Returns:
+    - dict: A dictionary containing 'top', 'bottom', and 'frequent' values.
+    """
+    top_values = df[column].nlargest(top_n)
+    bottom_values = df[column].nsmallest(top_n)
+    most_frequent = df[column].value_counts().head(top_n)
+
+    return {
+        'top': top_values,
+        'bottom': bottom_values,
+        'frequent': most_frequent
+    }

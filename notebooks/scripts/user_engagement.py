@@ -21,6 +21,7 @@ def normalize_metrics(agg_df):
     agg_df[['Dur. (ms)', 'Bearer Id', 'Total Traffic (Bytes)']] = scaler.fit_transform(agg_df[['Dur. (ms)', 'Bearer Id', 'Total Traffic (Bytes)']])
     return agg_df
 
+# Apply K-Means Clustering
 def kmeans_clustering(agg_df, k=3):
     # Perform k-means clustering
     kmeans = KMeans(n_clusters=k, random_state=42)
