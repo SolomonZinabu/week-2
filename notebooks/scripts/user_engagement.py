@@ -27,7 +27,14 @@ def kmeans_clustering(agg_df, k=3):
     kmeans = KMeans(n_clusters=k, random_state=42)
     agg_df['Engagement Cluster'] = kmeans.fit_predict(agg_df[['Dur. (ms)', 'Bearer Id', 'Total Traffic (Bytes)']])
     return agg_df, kmeans
-
+def kmeans_clustering2(agg_df, k=3):
+    """
+    Perform k-means clustering on the engagement and experience scores.
+    """
+    # Use 'engagement_score' and 'experience_score' instead of Dur. (ms) and Bearer Id
+    kmeans = KMeans(n_clusters=k, random_state=42)
+    agg_df['Cluster'] = kmeans.fit_predict(agg_df[['engagement_score', 'experience_score']])
+    return agg_df['Cluster'], kmeans
 def elbow_method(agg_df):
     # Plot the elbow method to determine the optimal number of clusters
     distortions = []
